@@ -111,6 +111,7 @@ body {
 .question {
   margin: 0 0 12px;
   line-height: 1.4;
+  white-space: pre-line;
 }
 
 .question-image {
@@ -258,6 +259,7 @@ button[disabled] {
   margin: 0 0 10px;
   font-weight: 600;
   line-height: 1.4;
+  white-space: pre-line;
 }
 
 #reviewCard {
