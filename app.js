@@ -1,5 +1,6 @@
 const progressEl = document.getElementById('progress');
 const statusEl = document.getElementById('status');
+const quizTitleEl = document.getElementById('quizTitle');
 const startCardEl = document.getElementById('startCard');
 const reviewCardEl = document.getElementById('reviewCard');
 const reviewListEl = document.getElementById('reviewList');
@@ -61,7 +62,7 @@ function showStartCard() {
   revealed = false;
   reviewCardEl.hidden = true;
 
-  progressEl.textContent = `Anzahl der Fragen wählen (1–${maxQuestions})`;  
+  progressEl.textContent = `Anzahl der Fragen wählen (1–${maxQuestions})`;
   questionCardEl.hidden = true;
   startCardEl.hidden = false;
   actionButtonEl.disabled = false;
@@ -92,11 +93,16 @@ function startQuizWithCount(requestedCount) {
   renderQuestion();
 }
 
-async function loadQuestions() {
+async function loadQuiz(quiz) {
+  document.title = quiz.title + ' Quiz';
+  quizTitleEl.textContent = quiz.title + ' Quiz';
+  progressEl.textContent = 'Fragen werden geladen...';
+
   try {
-    const response = await fetch('MTA2.json', { cache: 'no-store' });
+    const quizFilePath = 'data/' + quiz.file;
+    const response = await fetch(quizFilePath, { cache: 'no-store' });
     if (!response.ok) {
-      throw new Error(`Failed to load MTA2.json (${response.status})`);
+      throw new Error(`Datei konnte nicht geladen werden: ${quizFilePath} (${response.status})`);
     }
 
     const rawData = await response.json();
@@ -107,7 +113,7 @@ async function loadQuestions() {
     );
 
     if (!allQuestions.length) {
-      throw new Error('No valid questions found in MTA2.json.');
+      throw new Error('Keine gültigen Fragen in der Datei gefunden.');
     }
 
     showStartCard();
@@ -116,6 +122,34 @@ async function loadQuestions() {
     questionCardEl.hidden = true;
     actionButtonEl.disabled = true;
     progressEl.textContent = 'Quiz konnte nicht gestartet werden';
+    setStatus(`${err.message} Starte die App über einen lokalen Server, z. B. 'python -m http.server'.`);
+  }
+}
+
+async function init() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    const response = await fetch('data/config.json', { cache: 'no-store' });
+    if (!response.ok) {
+      throw new Error(`Konfiguration konnte nicht geladen werden (${response.status})`);
+    }
+
+    const quizzes = await response.json();
+    const active = (Array.isArray(quizzes) ? quizzes : []).filter((q) => q.active !== false);
+    const quiz = id ? active.find((q) => q.id === id) : active[0];
+
+    if (!quiz) {
+      window.location.replace('index.html');
+      return;
+    }
+
+    await loadQuiz(quiz);
+  } catch (err) {
+    questionCardEl.hidden = true;
+    actionButtonEl.disabled = true;
+    progressEl.textContent = 'Fehler beim Laden';
     setStatus(`${err.message} Starte die App über einen lokalen Server, z. B. 'python -m http.server'.`);
   }
 }
@@ -323,4 +357,4 @@ questionImageEl.addEventListener('error', () => {
   setStatus('Das Bild für diese Frage konnte nicht geladen werden.');
 });
 
-loadQuestions();
+init();

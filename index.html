@@ -3,45 +3,64 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MTA2 Quiz</title>
+    <title>Prüfungsvorbereitung</title>
     <meta name="language" content="de" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="app">
       <header class="topbar">
-        <h1>MTA2 Quiz</h1>
-        <p id="progress">Fragen werden geladen...</p>
-        <p><a href="fragen.html">Fragenübersicht →</a></p>
+        <h1>Prüfungsvorbereitung</h1>
+        <p>Wähle ein Quiz aus</p>
       </header>
 
-      <section id="startCard" class="card" hidden>
-        <h2 class="question">Quiz starten</h2>
-        <form id="startForm" class="start-form">
-          <label for="questionCountInput">Wie viele Fragen sollen gestellt werden?</label>
-          <div class="start-row">
-            <input id="questionCountInput" type="number" min="1" step="1" required style="width:100%;padding:12px 16px;font-size:1.2rem;font-family:inherit;border:1px solid #d5dde3;border-radius:10px;color:#1c2a33;line-height:1.4;height:auto;margin-top:10px;" />
-          </div>
-        </form>
+      <section class="card">
+        <h2 class="question">Quiz auswählen</h2>
+        <div id="quizList"></div>
       </section>
-
-      <section id="questionCard" class="card" hidden>
-        <h2 id="questionText" class="question"></h2>
-        <img id="questionImage" class="question-image" alt="Fragenillustration" hidden />
-        <form id="answersForm" class="answers"></form>
-      </section>
-
-      <section id="reviewCard" class="card" hidden>
-        <h2 class="question">Falsche Antworten</h2>
-        <div id="reviewList" class="review-list"></div>
-      </section>
-
-      <div class="actions">
-        <p id="status" class="status" aria-live="polite"></p>
-        <button id="actionButton" type="button" disabled>Antwort bestätigen</button>
-      </div>
     </main>
 
-    <script src="app.js"></script>
+    <script>
+      async function init() {
+        const listEl = document.getElementById('quizList');
+        try {
+          const res = await fetch('data/config.json', { cache: 'no-store' });
+          if (!res.ok) throw new Error(`Konfiguration konnte nicht geladen werden (${res.status})`);
+          const quizzes = await res.json();
+          const active = (Array.isArray(quizzes) ? quizzes : []).filter((q) => q.active !== false);
+          if (!active.length) {
+            listEl.innerHTML = '<p style="color:var(--muted)">Keine Quizze verfügbar.</p>';
+            return;
+          }
+          active.forEach((quiz) => {
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:8px;';
+
+            const a = document.createElement('a');
+            a.href = `quiz.html?id=${encodeURIComponent(quiz.id)}`;
+            a.textContent = quiz.title;
+            a.style.cssText =
+              'flex:1;font-size:1.1rem;padding:14px 16px;' +
+              'text-align:left;background:var(--accent);color:#fff;border-radius:10px;' +
+              'text-decoration:none;box-sizing:border-box;';
+
+            const fragen = document.createElement('a');
+            fragen.href = `fragen.html?id=${encodeURIComponent(quiz.id)}`;
+            fragen.textContent = 'Fragenübersicht';
+            fragen.style.cssText =
+              'white-space:nowrap;font-size:0.9rem;padding:14px 14px;' +
+              'background:var(--card);color:var(--accent);border:1px solid var(--line);border-radius:10px;' +
+              'text-decoration:none;box-sizing:border-box;';
+
+            row.appendChild(a);
+            row.appendChild(fragen);
+            listEl.appendChild(row);
+          });
+        } catch (err) {
+          listEl.innerHTML = `<p style="color:var(--muted)">${err.message}</p>`;
+        }
+      }
+      init();
+    </script>
   </body>
 </html>
