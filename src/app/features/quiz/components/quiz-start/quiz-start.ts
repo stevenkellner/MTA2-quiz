@@ -21,7 +21,7 @@ export class QuizStartComponent {
     readonly defaultCount = input.required<number>();
     readonly quizId = input.required<string>();
 
-    readonly start = output<number>();
+    readonly startQuiz = output<number>();
     readonly openSelect = output<void>();
 
     protected readonly statusText = signal('');
@@ -39,7 +39,7 @@ export class QuizStartComponent {
             return;
         }
         this.statusText.set('');
-        this.start.emit(requested);
+        this.startQuiz.emit(requested);
     }
 
     focus(): void {

@@ -20,7 +20,7 @@
                     [maxQuestions]="maxQuestions()"
                     [defaultCount]="defaultCount()"
                     [quizId]="quizId()"
-                    (start)="onStart($event)"
+                    (startQuiz)="onStart($event)"
                     (openSelect)="openSelectCard()"
                 />
             }
@@ -29,8 +29,8 @@
                     [allQuestions]="allQuestions()"
                     [selectedIndices]="selectedIndices()"
                     (back)="backToStart()"
-                    (start)="onStartWithSelected()"
-                    (toggle)="toggleSelectEntry($event)"
+                    (startQuiz)="onStartWithSelected()"
+                    (toggleEntry)="toggleSelectEntry($event)"
                     (selectAll)="selectAll()"
                     (deselectAll)="deselectAll()"
                 />

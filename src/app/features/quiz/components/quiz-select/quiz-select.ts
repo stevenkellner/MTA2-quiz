@@ -21,8 +21,8 @@ export class QuizSelectComponent {
     readonly selectedIndices = input.required<Set<number>>();
 
     readonly back = output<void>();
-    readonly start = output<void>();
-    readonly toggle = output<number>();
+    readonly startQuiz = output<void>();
+    readonly toggleEntry = output<number>();
     readonly selectAll = output<void>();
     readonly deselectAll = output<void>();
 
@@ -60,7 +60,7 @@ export class QuizSelectComponent {
             return;
         }
         this.statusText.set('');
-        this.start.emit();
+        this.startQuiz.emit();
     }
 
     focus(): void {
