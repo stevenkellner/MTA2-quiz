@@ -19,6 +19,7 @@
                 <app-quiz-start
                     [maxQuestions]="maxQuestions()"
                     [defaultCount]="defaultCount()"
+                    [quizId]="quizId()"
                     (start)="onStart($event)"
                     (openSelect)="openSelectCard()"
                 />

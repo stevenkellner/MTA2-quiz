@@ -21,6 +21,8 @@
     <button type="button" class="secondary-btn" (click)="openSelect.emit()">
         Fragen manuell auswählen →
     </button>
+    <div class="or-divider" aria-hidden="true">oder</div>
+    <a [routerLink]="['/fragen', quizId()]" class="secondary-btn">Alle Fragen ansehen →</a>
 </section>
 
 <div class="actions">

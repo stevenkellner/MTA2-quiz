@@ -59,6 +59,7 @@
 }
 
 .secondary-btn {
+    display: block;
     margin-top: 10px;
     width: 100%;
     background: var(--card);
@@ -69,6 +70,8 @@
     border-radius: 10px;
     cursor: pointer;
     text-align: left;
+    text-decoration: none;
+    box-sizing: border-box;
 
     &:hover {
         background: #f0f4f7;

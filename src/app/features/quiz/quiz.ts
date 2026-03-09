@@ -36,6 +36,7 @@ export class QuizComponent implements OnInit {
     protected readonly loading = signal(true);
     protected readonly loadError = signal<string | null>(null);
     protected readonly quizTitle = signal('Quiz');
+    protected readonly quizId = signal('');
 
     protected readonly allQuestions = signal<Question[]>([]);
     private readonly quizDefaultCount = signal<number | null>(null);
@@ -87,7 +88,8 @@ export class QuizComponent implements OnInit {
     protected readonly finishedStatusMessage = signal<StatusMessage>({ text: '', kind: 'neutral' });
 
     ngOnInit(): void {
-        const id = this.route.snapshot.paramMap.get('id');
+        const id = this.route.snapshot.paramMap.get('id') ?? '';
+        this.quizId.set(id);
 
         this.quizService.loadConfig().subscribe({
             next: configs => {

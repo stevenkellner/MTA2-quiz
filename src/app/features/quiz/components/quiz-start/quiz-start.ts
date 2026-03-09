@@ -19,6 +19,7 @@ import { RouterLink } from '@angular/router';
 export class QuizStartComponent {
     readonly maxQuestions = input.required<number>();
     readonly defaultCount = input.required<number>();
+    readonly quizId = input.required<string>();
 
     readonly start = output<number>();
     readonly openSelect = output<void>();
