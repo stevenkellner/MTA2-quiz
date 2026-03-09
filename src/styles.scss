@@ -83,6 +83,7 @@ body {
     background: #fff;
     cursor: pointer;
     position: relative;
+    user-select: none;
 
     &.correct {
         border-color: #73b894;
