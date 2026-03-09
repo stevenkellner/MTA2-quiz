@@ -35,7 +35,7 @@
             <label
                 class="answer-item"
                 [class.correct]="revealed() && answer.isCorrect"
-                [class.incorrect]="revealed() && !answer.isCorrect"
+                [class.incorrect]="revealed() && !answer.isCorrect && selectedAnswers()[i]"
             >
                 <input
                     type="checkbox"
