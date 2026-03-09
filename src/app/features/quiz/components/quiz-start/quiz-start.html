@@ -1,0 +1,34 @@
+<section class="card" aria-labelledby="start-heading">
+    <h2 id="start-heading" class="question">Quiz starten</h2>
+    <a routerLink="/" class="back-link">← Zur Auswahl</a>
+    <div class="start-form">
+        <label for="question-count-id">Wie viele Fragen sollen gestellt werden?</label>
+        <div class="start-row">
+            <input
+                #countInput
+                id="question-count-id"
+                type="number"
+                [min]="1"
+                [max]="maxQuestions()"
+                [value]="defaultCount()"
+                required
+                class="count-input"
+                aria-describedby="start-status"
+            />
+        </div>
+    </div>
+    <div class="or-divider" aria-hidden="true">oder</div>
+    <button type="button" class="secondary-btn" (click)="openSelect.emit()">
+        Fragen manuell auswählen →
+    </button>
+</section>
+
+<div class="actions">
+    <p
+        id="start-status"
+        class="status"
+        [class.incorrect]="statusText()"
+        aria-live="polite"
+    >{{ statusText() }}</p>
+    <button type="button" (click)="attemptStart()">Starten</button>
+</div>

@@ -21,3 +21,10 @@ export interface WrongAnswer {
     question: Question;
     selected: Set<number>;
 }
+
+export type StatusKind = 'neutral' | 'correct' | 'incorrect';
+
+export interface StatusMessage {
+    text: string;
+    kind: StatusKind;
+}

@@ -1,0 +1,52 @@
+<section class="card" aria-labelledby="select-heading">
+    <h2 id="select-heading" class="question">Fragen auswählen</h2>
+    <button type="button" class="back-btn" (click)="back.emit()">← Zurück</button>
+    <div class="select-toolbar">
+        <input
+            #searchInput
+            type="search"
+            placeholder="Fragen durchsuchen…"
+            [value]="searchTerm()"
+            (input)="onSearchInput($any($event.target).value)"
+            aria-label="Fragen durchsuchen"
+        />
+        <div class="select-btn-group">
+            <button type="button" (click)="selectAll.emit()">Alle</button>
+            <button type="button" (click)="deselectAll.emit()">Keine</button>
+        </div>
+    </div>
+    <p class="select-info" aria-live="polite">{{ infoText() }}</p>
+    <div class="select-list" role="list" aria-label="Fragenliste">
+        @for (entry of filteredEntries(); track entry.idx) {
+            <div
+                class="select-entry"
+                [class.selected]="isIndexSelected(entry.idx)"
+                role="listitem"
+                (click)="toggle.emit(entry.idx)"
+                (keydown.space)="$event.preventDefault(); toggle.emit(entry.idx)"
+                (keydown.enter)="toggle.emit(entry.idx)"
+                tabindex="0"
+                [attr.aria-pressed]="isIndexSelected(entry.idx)"
+                [attr.aria-label]="'Frage ' + (entry.idx + 1) + ': ' + (entry.q.text || 'Kein Fragetext')"
+            >
+                <span class="select-entry-num" aria-hidden="true">{{ entry.idx + 1 }}.</span>
+                <span class="select-entry-text">{{ entry.q.text || '(Kein Fragetext)' }}</span>
+                <span class="select-checkbox" aria-hidden="true"></span>
+            </div>
+        }
+        @if (filteredEntries().length === 0) {
+            <p class="select-no-results">Keine Ergebnisse gefunden.</p>
+        }
+    </div>
+</section>
+
+<div class="actions">
+    <p
+        class="status"
+        [class.incorrect]="statusText()"
+        aria-live="polite"
+    >{{ statusText() }}</p>
+    <button type="button" [disabled]="selectedIndices().size === 0" (click)="attemptStart()">
+        Quiz mit Auswahl starten
+    </button>
+</div>

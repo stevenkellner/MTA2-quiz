@@ -1,0 +1,33 @@
+@if (wrongAnswers().length > 0) {
+    <section class="card review-card" aria-labelledby="review-heading">
+        <h2 id="review-heading" class="question">Falsche Antworten</h2>
+        <div class="review-list">
+            @for (wa of wrongAnswers(); track wa.question.text; let i = $index) {
+                <div class="review-entry">
+                    <p class="review-question">{{ i + 1 }}. {{ wa.question.text || '(Kein Fragetext)' }}</p>
+                    @if (wa.question.imageUrl) {
+                        <img class="question-image" [src]="wa.question.imageUrl" alt="Fragenillustration" />
+                    }
+                    @for (answer of wa.question.answers; track answer.text; let j = $index) {
+                        <div
+                            class="review-answer"
+                            [class.correct]="answer.isCorrect"
+                            [class.incorrect]="!answer.isCorrect && wa.selected.has(j)"
+                        >
+                            {{ answer.text }}
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </section>
+}
+
+<div class="actions">
+    <p
+        class="status"
+        aria-live="polite"
+        aria-atomic="true"
+    >{{ statusMessage().text }}</p>
+    <button type="button" (click)="restart.emit()">Neu starten</button>
+</div>
