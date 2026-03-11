@@ -32,6 +32,7 @@ export class QuizStateService {
         if (locale === untracked(() => this.loadedLocale())) return;
         const file = this.quizService.resolveFile(quiz.files, locale);
         if (!file) {
+            this.loadedLocale.set(locale);
             this.localeErrorActive.set(true);
             this.view.set('start');
         } else {
