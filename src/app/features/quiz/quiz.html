@@ -13,7 +13,7 @@
     } @else if (state.loadError()) {
         <section class="card" role="alert">
             <p class="muted">{{ state.loadError() }}</p>
-            <a routerLink="/" class="back-link">{{ i18n().nav.backToSelection }}</a>
+            <a routerLink="/" class="back-link"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {{ i18n().nav.backToSelection }}</a>
         </section>
     } @else {
         @switch (state.view()) {

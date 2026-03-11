@@ -1,7 +1,7 @@
 <section class="card" aria-labelledby="select-heading">
     <div class="card-header">
         <h2 id="select-heading" class="question">{{ i18n().quiz.select.heading }}</h2>
-        <button type="button" class="back-btn" (click)="state.navigateToStart()">{{ i18n().nav.back }}</button>
+        <button type="button" class="back-btn" (click)="state.navigateToStart()"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> {{ i18n().nav.back }}</button>
     </div>
     <div class="select-toolbar">
         <input

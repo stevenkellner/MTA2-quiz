@@ -3,8 +3,8 @@ import { Translations } from './translations';
 
 export const en: Translations = {
     nav: {
-        back: '← Back',
-        backToSelection: '← Back to selection',
+        back: 'Back',
+        backToSelection: 'Back to selection',
     },
     errors: {
         quizNotFound: 'Quiz not found.',
