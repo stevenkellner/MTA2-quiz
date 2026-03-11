@@ -18,7 +18,8 @@ export class QuizFinishedComponent {
     protected readonly state = inject(QuizStateService);
 
     protected onKeydown(event: KeyboardEvent): void {
-        if (event.key !== 'Enter' || event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        if (event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
         const target = event.target as HTMLElement | null;
         if (target?.tagName === 'BUTTON' || target?.tagName === 'A') return;
         event.preventDefault();
