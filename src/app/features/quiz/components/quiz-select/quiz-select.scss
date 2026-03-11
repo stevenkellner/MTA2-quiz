@@ -1,12 +1,20 @@
+.card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 4px;
+}
+
 .back-btn {
+    flex-shrink: 0;
     background: none;
     border: none;
     color: var(--accent);
     padding: 0;
-    font-size: 0.95rem;
-    margin-bottom: 14px;
+    font-size: 0.9rem;
     cursor: pointer;
-    display: inline-block;
+    white-space: nowrap;
 
     &:hover {
         text-decoration: underline;

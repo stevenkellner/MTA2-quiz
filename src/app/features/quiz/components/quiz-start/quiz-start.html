@@ -1,21 +1,21 @@
 <section class="card" aria-labelledby="start-heading">
-    <h2 id="start-heading" class="question">Quiz starten</h2>
-    <a routerLink="/" class="back-link">← Zur Auswahl</a>
+    <div class="card-header">
+        <h2 id="start-heading" class="question">Quiz starten</h2>
+        <a routerLink="/" class="back-link">← Zur Auswahl</a>
+    </div>
     <div class="start-form">
         <label for="question-count-id">Wie viele Fragen sollen gestellt werden?</label>
-        <div class="start-row">
-            <input
-                #countInput
-                id="question-count-id"
-                type="number"
-                [min]="1"
-                [max]="state.maxQuestions()"
-                [value]="state.defaultCount()"
-                required
-                class="count-input"
-                aria-describedby="start-status"
-            />
-        </div>
+        <input
+            #countInput
+            id="question-count-id"
+            type="number"
+            [min]="1"
+            [max]="state.maxQuestions()"
+            [value]="state.defaultCount()"
+            required
+            class="count-input"
+            aria-describedby="start-status"
+        />
         <label class="toggle-row" for="show-answer-toggle">
             <span>Korrekte Antwort nach jeder Frage anzeigen</span>
             <span
@@ -34,12 +34,16 @@
             />
         </label>
     </div>
-    <div class="or-divider" aria-hidden="true">oder</div>
-    <button type="button" class="secondary-btn" (click)="state.navigateToSelect()">
-        Fragen manuell auswählen →
-    </button>
-    <div class="or-divider" aria-hidden="true">oder</div>
-    <a [routerLink]="['/fragen', state.quizId()]" class="secondary-btn">Alle Fragen ansehen →</a>
+    <div class="alt-actions" aria-label="Weitere Optionen">
+        <button type="button" class="alt-btn" (click)="state.navigateToSelect()">
+            <span class="alt-btn-title">Manuell auswählen</span>
+            <span class="alt-btn-sub">Fragen selbst zusammenstellen</span>
+        </button>
+        <a [routerLink]="['/fragen', state.quizId()]" class="alt-btn">
+            <span class="alt-btn-title">Alle Fragen ansehen</span>
+            <span class="alt-btn-sub">Fragenübersicht durchsuchen</span>
+        </a>
+    </div>
 </section>
 
 <div class="actions">
