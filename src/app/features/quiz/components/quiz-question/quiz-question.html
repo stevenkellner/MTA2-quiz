@@ -23,12 +23,12 @@
 <div class="actions">
     @if (!state.revealed()) {
         <p class="hotkey-hint" aria-hidden="true">
-            <kbd>1</kbd>–<kbd>N</kbd> Antwort wählen &nbsp;·&nbsp;
-            <kbd>⇧</kbd>+<kbd>1</kbd>–<kbd>N</kbd> Alle außer N &nbsp;·&nbsp;
-            <kbd>A</kbd> Alle wählen &nbsp;·&nbsp;
-            <kbd>N</kbd> Keine wählen &nbsp;·&nbsp;
-            <kbd>Enter</kbd> / <kbd>Space</kbd> Bestätigen &nbsp;·&nbsp;
-            <kbd>Esc</kbd> Zum Start
+            <kbd>1</kbd>–<kbd>N</kbd> {{ i18n().quiz.question.hotkeys.choose }} &nbsp;·&nbsp;
+            <kbd>⇧</kbd>+<kbd>1</kbd>–<kbd>N</kbd> {{ i18n().quiz.question.hotkeys.allExcept }} &nbsp;·&nbsp;
+            <kbd>A</kbd> {{ i18n().quiz.question.hotkeys.all }} &nbsp;·&nbsp;
+            <kbd>N</kbd> {{ i18n().quiz.question.hotkeys.none }} &nbsp;·&nbsp;
+            <kbd>Enter</kbd> / <kbd>Space</kbd> {{ i18n().quiz.question.hotkeys.confirm }} &nbsp;·&nbsp;
+            <kbd>Esc</kbd> {{ i18n().quiz.question.hotkeys.esc }}
         </p>
     }
     <button type="button" class="action-btn" (click)="onAction()">{{ actionButtonText() }}</button>

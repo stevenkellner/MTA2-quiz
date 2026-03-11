@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { QuizStateService } from '../../../../services/quiz-state.service';
 import { QuestionViewComponent } from '../../../../shared/components/question-view/question-view';
+import { I18nService } from '../../../../services/i18n.service';
 
 @Component({
     selector: 'app-quiz-question',
@@ -17,14 +18,13 @@ import { QuestionViewComponent } from '../../../../shared/components/question-vi
 })
 export class QuizQuestionComponent {
     protected readonly state = inject(QuizStateService);
+    protected readonly i18n = inject(I18nService).i18n;
 
-    protected readonly actionButtonText = computed(() =>
-        !this.state.revealed()
-            ? 'Antwort bestätigen'
-            : this.state.isLastQuestion()
-              ? 'Quiz beenden'
-              : 'Nächste Frage'
-    );
+    protected readonly actionButtonText = computed(() => {
+        const i18n = this.i18n();
+        if (!this.state.revealed()) return i18n.quiz.question.confirm;
+        return this.state.isLastQuestion() ? i18n.quiz.question.finish : i18n.quiz.question.next;
+    });
 
     onAction(): void {
         if (!this.state.revealed()) {

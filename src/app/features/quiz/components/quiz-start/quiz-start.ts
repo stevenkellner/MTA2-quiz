@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { QuizStateService } from '../../../../services/quiz-state.service';
+import { I18nService } from '../../../../services/i18n.service';
 
 @Component({
     selector: 'app-quiz-start',
@@ -20,6 +21,7 @@ import { QuizStateService } from '../../../../services/quiz-state.service';
 })
 export class QuizStartComponent implements AfterViewInit {
     protected readonly state = inject(QuizStateService);
+    protected readonly i18n = inject(I18nService).i18n;
     protected readonly statusText = signal('');
 
     private readonly countInputRef = viewChild<ElementRef<HTMLInputElement>>('countInput');
@@ -34,7 +36,7 @@ export class QuizStartComponent implements AfterViewInit {
         const max = this.state.maxQuestions();
         const requested = Number.parseInt(inputEl.value, 10);
         if (!Number.isInteger(requested) || requested < 1 || requested > max) {
-            this.statusText.set(`Bitte gib eine ganze Zahl zwischen 1 und ${max} ein.`);
+            this.statusText.set(this.i18n().quiz.start.countError(max));
             inputEl.focus();
             return;
         }

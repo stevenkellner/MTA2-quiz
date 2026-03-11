@@ -1,10 +1,10 @@
 <section class="card" aria-labelledby="start-heading">
     <div class="card-header">
-        <h2 id="start-heading" class="question">Quiz starten</h2>
-        <a routerLink="/" class="back-link">← Zur Auswahl</a>
+        <h2 id="start-heading" class="question">{{ i18n().quiz.start.heading }}</h2>
+        <a routerLink="/" class="back-link">{{ i18n().nav.backToSelection }}</a>
     </div>
     <div class="start-form">
-        <label for="question-count-id">Wie viele Fragen sollen gestellt werden?</label>
+        <label for="question-count-id">{{ i18n().quiz.start.countLabel }}</label>
         <input
             #countInput
             id="question-count-id"
@@ -17,7 +17,7 @@
             aria-describedby="start-status"
         />
         <label class="toggle-row" for="show-answer-toggle">
-            <span>Korrekte Antwort nach jeder Frage anzeigen</span>
+            <span>{{ i18n().quiz.start.showAnswer }}</span>
             <span
                 class="toggle-track"
                 [class.on]="state.showAnswerAfterGuess()"
@@ -34,14 +34,14 @@
             />
         </label>
     </div>
-    <div class="alt-actions" aria-label="Weitere Optionen">
+    <div class="alt-actions" [attr.aria-label]="i18n().quiz.start.altActionsLabel">
         <button type="button" class="alt-btn" (click)="state.navigateToSelect()">
-            <span class="alt-btn-title">Manuell auswählen</span>
-            <span class="alt-btn-sub">Fragen selbst zusammenstellen</span>
+            <span class="alt-btn-title">{{ i18n().quiz.start.manual.title }}</span>
+            <span class="alt-btn-sub">{{ i18n().quiz.start.manual.sub }}</span>
         </button>
         <a [routerLink]="['/fragen', state.quizId()]" class="alt-btn">
-            <span class="alt-btn-title">Alle Fragen ansehen</span>
-            <span class="alt-btn-sub">Fragenübersicht durchsuchen</span>
+            <span class="alt-btn-title">{{ i18n().quiz.start.browse.title }}</span>
+            <span class="alt-btn-sub">{{ i18n().quiz.start.browse.sub }}</span>
         </a>
     </div>
 </section>
@@ -53,5 +53,5 @@
         [class.incorrect]="statusText()"
         aria-live="polite"
     >{{ statusText() }}</p>
-    <button type="button" (click)="attemptStart()">Starten</button>
+    <button type="button" (click)="attemptStart()">{{ i18n().quiz.start.btn }}</button>
 </div>

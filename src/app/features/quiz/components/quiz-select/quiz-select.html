@@ -1,24 +1,24 @@
 <section class="card" aria-labelledby="select-heading">
     <div class="card-header">
-        <h2 id="select-heading" class="question">Fragen auswählen</h2>
-        <button type="button" class="back-btn" (click)="state.navigateToStart()">← Zurück</button>
+        <h2 id="select-heading" class="question">{{ i18n().quiz.select.heading }}</h2>
+        <button type="button" class="back-btn" (click)="state.navigateToStart()">{{ i18n().nav.back }}</button>
     </div>
     <div class="select-toolbar">
         <input
             #searchInput
             type="search"
-            placeholder="Fragen durchsuchen…"
+            [placeholder]="i18n().quiz.select.search.placeholder"
             [value]="searchTerm()"
             (input)="onSearchInput($any($event.target).value)"
-            aria-label="Fragen durchsuchen"
+            [attr.aria-label]="i18n().quiz.select.search.label"
         />
         <div class="select-btn-group">
-            <button type="button" (click)="state.selectAllQuestions()">Alle</button>
-            <button type="button" (click)="state.deselectAllQuestions()">Keine</button>
+            <button type="button" (click)="state.selectAllQuestions()">{{ i18n().quiz.select.all }}</button>
+            <button type="button" (click)="state.deselectAllQuestions()">{{ i18n().quiz.select.none }}</button>
         </div>
     </div>
     <p class="select-info" aria-live="polite">{{ infoText() }}</p>
-    <div class="select-list" role="list" aria-label="Fragenliste">
+    <div class="select-list" role="list" [attr.aria-label]="i18n().quiz.select.listLabel">
         @for (entry of filteredEntries(); track entry.idx) {
             <div
                 class="select-entry"
@@ -29,15 +29,15 @@
                 (keydown.enter)="$event.stopPropagation(); state.toggleSelectEntry(entry.idx)"
                 tabindex="0"
                 [attr.aria-pressed]="isIndexSelected(entry.idx)"
-                [attr.aria-label]="'Frage ' + (entry.idx + 1) + ': ' + (entry.q.text || 'Kein Fragetext')"
+                [attr.aria-label]="i18n().quiz.select.entryLabel(entry.idx + 1, entry.q.text || i18n().quiz.select.noText)"
             >
                 <span class="select-entry-num" aria-hidden="true">{{ entry.idx + 1 }}.</span>
-                <span class="select-entry-text">{{ entry.q.text || '(Kein Fragetext)' }}</span>
+                <span class="select-entry-text">{{ entry.q.text || i18n().quiz.select.noText }}</span>
                 <span class="select-checkbox" aria-hidden="true"></span>
             </div>
         }
         @if (filteredEntries().length === 0) {
-            <p class="select-no-results">Keine Ergebnisse gefunden.</p>
+            <p class="select-no-results">{{ i18n().quiz.select.noResults }}</p>
         }
     </div>
 </section>
@@ -49,6 +49,6 @@
         aria-live="polite"
     >{{ statusText() }}</p>
     <button type="button" [disabled]="state.selectedIndices().size === 0" (click)="attemptStart()">
-        Quiz mit Auswahl starten
+        {{ i18n().quiz.select.startBtn }}
     </button>
 </div>

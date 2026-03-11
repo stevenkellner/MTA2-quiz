@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { RouterLink } from '@angular/router';
 import { QuizConfig } from '../../models/quiz.model';
 import { QuizService } from '../../services/quiz.service';
+import { I18nService } from '../../services/i18n.service';
 
 @Component({
     selector: 'app-home',
@@ -12,6 +13,7 @@ import { QuizService } from '../../services/quiz.service';
 })
 export class HomeComponent implements OnInit {
     private readonly quizService = inject(QuizService);
+    protected readonly i18n = inject(I18nService).i18n;
 
     protected readonly quizzes = signal<QuizConfig[]>([]);
     protected readonly error = signal<string | null>(null);
@@ -24,7 +26,7 @@ export class HomeComponent implements OnInit {
                 this.loading.set(false);
             },
             error: (err: unknown) => {
-                this.error.set(err instanceof Error ? err.message : 'Konfiguration konnte nicht geladen werden.');
+                this.error.set(err instanceof Error ? err.message : this.i18n().errors.configError);
                 this.loading.set(false);
             },
         });

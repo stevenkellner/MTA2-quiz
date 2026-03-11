@@ -1,0 +1,27 @@
+.lang-toggle {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    z-index: 100;
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 4px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: color 120ms ease, border-color 120ms ease;
+
+    &:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+    }
+
+    &:focus-visible {
+        outline: 3px solid rgba(13, 106, 139, 0.35);
+        outline-offset: 2px;
+    }
+}

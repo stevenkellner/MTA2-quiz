@@ -9,6 +9,7 @@ import {
     viewChild,
 } from '@angular/core';
 import { QuizStateService } from '../../../../services/quiz-state.service';
+import { I18nService } from '../../../../services/i18n.service';
 
 @Component({
     selector: 'app-quiz-select',
@@ -19,6 +20,7 @@ import { QuizStateService } from '../../../../services/quiz-state.service';
 })
 export class QuizSelectComponent implements AfterViewInit {
     protected readonly state = inject(QuizStateService);
+    protected readonly i18n = inject(I18nService).i18n;
     protected readonly searchTerm = signal('');
     protected readonly statusText = signal('');
 
@@ -41,7 +43,7 @@ export class QuizSelectComponent implements AfterViewInit {
     });
 
     protected readonly infoText = computed(() =>
-        `${this.state.selectedIndices().size} von ${this.state.allQuestions().length} Fragen ausgewählt`
+        this.i18n().quiz.select.info(this.state.selectedIndices().size, this.state.allQuestions().length)
     );
 
     protected isIndexSelected(idx: number): boolean {
@@ -54,7 +56,7 @@ export class QuizSelectComponent implements AfterViewInit {
 
     attemptStart(): void {
         if (this.state.selectedIndices().size === 0) {
-            this.statusText.set('Bitte wähle mindestens eine Frage aus.');
+            this.statusText.set(this.i18n().quiz.select.minError);
             return;
         }
         this.statusText.set('');

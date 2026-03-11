@@ -8,12 +8,12 @@
 
     @if (state.loading()) {
         <section class="card">
-            <p class="muted">Fragen werden geladen…</p>
+            <p class="muted">{{ i18n().errors.loading }}</p>
         </section>
     } @else if (state.loadError()) {
         <section class="card" role="alert">
             <p class="muted">{{ state.loadError() }}</p>
-            <a routerLink="/" class="back-link">← Zur Auswahl</a>
+            <a routerLink="/" class="back-link">{{ i18n().nav.backToSelection }}</a>
         </section>
     } @else {
         @switch (state.view()) {

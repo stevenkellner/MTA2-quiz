@@ -1,24 +1,24 @@
 <main class="app">
     <header class="topbar">
-        <h1>Quizze</h1>
-        <p>Wähle ein Quiz aus</p>
+        <h1>{{ i18n().home.title }}</h1>
+        <p>{{ i18n().home.subtitle }}</p>
     </header>
 
     <section class="card" aria-labelledby="quiz-select-heading">
-        <h2 id="quiz-select-heading" class="question">Quiz auswählen</h2>
+        <h2 id="quiz-select-heading" class="question">{{ i18n().home.selectHeading }}</h2>
 
         @if (loading()) {
-            <p class="muted">Quizze werden geladen…</p>
+            <p class="muted">{{ i18n().errors.loading }}</p>
         } @else if (error()) {
             <p class="muted" role="alert">{{ error() }}</p>
         } @else if (quizzes().length === 0) {
-            <p class="muted">Keine Quizze verfügbar.</p>
+            <p class="muted">{{ i18n().home.noQuizzes }}</p>
         } @else {
-            <ul class="quiz-list" aria-label="Verfügbare Quizze">
+            <ul class="quiz-list" [attr.aria-label]="i18n().home.selectHeading">
                 @for (quiz of quizzes(); track quiz.id) {
                     <li class="quiz-row">
                         <a [routerLink]="['/quiz', quiz.id]" class="quiz-link">{{ quiz.title }}</a>
-                        <a [routerLink]="['/fragen', quiz.id]" class="quiz-fragen-link">Fragenübersicht</a>
+                        <a [routerLink]="['/fragen', quiz.id]" class="quiz-fragen-link">{{ i18n().home.questionsLink }}</a>
                     </li>
                 }
             </ul>

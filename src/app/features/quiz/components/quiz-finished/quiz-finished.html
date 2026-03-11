@@ -1,21 +1,21 @@
 @if (state.finishedStats(); as stats) {
     <section class="card result-card" aria-labelledby="result-heading">
-        <h2 id="result-heading" class="result-title">Quiz beendet</h2>
+        <h2 id="result-heading" class="result-title">{{ i18n().quiz.finished.title }}</h2>
         <div class="title-divider" aria-hidden="true"></div>
         <div class="result-stats">
             <div class="stat">
                 <span class="stat-value">{{ stats.percent }}%</span>
-                <span class="stat-label">Ergebnis</span>
+                <span class="stat-label">{{ i18n().quiz.finished.result }}</span>
             </div>
             <div class="stat-divider" aria-hidden="true"></div>
             <div class="stat">
                 <span class="stat-value">{{ stats.score }}&thinsp;/&thinsp;{{ stats.total }}</span>
-                <span class="stat-label">Richtig</span>
+                <span class="stat-label">{{ i18n().quiz.finished.correct }}</span>
             </div>
             <div class="stat-divider" aria-hidden="true"></div>
             <div class="stat">
                 <span class="stat-value">{{ stats.timeStr }}</span>
-                <span class="stat-label">Zeit</span>
+                <span class="stat-label">{{ i18n().quiz.finished.time }}</span>
             </div>
         </div>
     </section>
@@ -23,7 +23,7 @@
 
 @if (state.wrongAnswers().length > 0) {
     <section class="card review-card" aria-labelledby="review-heading">
-        <h2 id="review-heading" class="question">Falsche Antworten</h2>
+        <h2 id="review-heading" class="question">{{ i18n().quiz.finished.wrongHeading }}</h2>
         <div class="review-list">
             @for (wa of state.wrongAnswers(); track wa.question.text; let i = $index) {
                 <div class="review-entry">
@@ -40,5 +40,5 @@
 }
 
 <div class="actions">
-    <button type="button" class="action-btn" (click)="state.restart()">Neu starten</button>
+    <button type="button" class="action-btn" (click)="state.restart()">{{ i18n().quiz.finished.restart }}</button>
 </div>

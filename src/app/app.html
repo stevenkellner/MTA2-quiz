@@ -1,1 +1,7 @@
 <router-outlet />
+<button
+    class="lang-toggle"
+    type="button"
+    (click)="i18nService.toggleLocale()"
+    [attr.aria-label]="i18nService.locale() === 'de' ? 'Switch to English' : 'Auf Deutsch wechseln'"
+>{{ i18nService.locale() === 'de' ? 'EN' : 'DE' }}</button>

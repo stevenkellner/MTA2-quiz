@@ -1,23 +1,23 @@
 <main class="app">
     <header class="topbar">
         <h1>{{ pageTitle() }}</h1>
-        <p><button type="button" class="back-link" (click)="goBack()">← Zurück</button></p>
+        <p><button type="button" class="back-link" (click)="goBack()">{{ i18n().nav.back }}</button></p>
     </header>
 
     <div class="search-bar">
         <input
             type="search"
-            placeholder="Fragen oder Antworten durchsuchen…"
+            [placeholder]="i18n().fragen.search.placeholder"
             [value]="searchTerm()"
             (input)="onSearchInput($any($event.target).value)"
-            aria-label="Fragen und Antworten durchsuchen"
+            [attr.aria-label]="i18n().fragen.search.label"
         />
     </div>
     <p class="search-info" aria-live="polite">{{ searchInfoText() }}</p>
 
     @if (loading()) {
         <div class="fragen-list">
-            <p class="no-results">Fragen werden geladen…</p>
+            <p class="no-results">{{ i18n().errors.loading }}</p>
         </div>
     } @else if (loadError()) {
         <div class="fragen-list" role="alert">
@@ -26,7 +26,7 @@
     } @else {
         <div class="fragen-list">
             @if (filteredQuestions().length === 0) {
-                <p class="no-results">Keine Ergebnisse gefunden.</p>
+                <p class="no-results">{{ i18n().fragen.noResults }}</p>
             }
             @for (question of filteredQuestions(); track question.text) {
                 <article class="fragen-entry">

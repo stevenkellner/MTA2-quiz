@@ -5,6 +5,7 @@ import {
 } from '@angular/core';
 import { QuizStateService } from '../../../../services/quiz-state.service';
 import { QuestionViewComponent } from '../../../../shared/components/question-view/question-view';
+import { I18nService } from '../../../../services/i18n.service';
 
 @Component({
     selector: 'app-quiz-finished',
@@ -16,6 +17,7 @@ import { QuestionViewComponent } from '../../../../shared/components/question-vi
 })
 export class QuizFinishedComponent {
     protected readonly state = inject(QuizStateService);
+    protected readonly i18n = inject(I18nService).i18n;
 
     protected onKeydown(event: KeyboardEvent): void {
         if (event.key !== 'Enter' && event.key !== ' ') return;

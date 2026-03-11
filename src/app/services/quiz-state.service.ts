@@ -2,6 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Question, StatusMessage, WrongAnswer } from '../models/quiz.model';
 import { QuizService } from './quiz.service';
+import { I18nService } from './i18n.service';
 
 export type QuizView = 'start' | 'select' | 'question' | 'finished';
 
@@ -9,10 +10,12 @@ export type QuizView = 'start' | 'select' | 'question' | 'finished';
 export class QuizStateService {
     private readonly route = inject(ActivatedRoute);
     private readonly quizService = inject(QuizService);
+    private readonly i18n = inject(I18nService).i18n;
 
     readonly loading = signal(true);
     readonly loadError = signal<string | null>(null);
-    readonly quizTitle = signal('Quiz');
+    private readonly loadedQuizTitle = signal('');
+    readonly quizTitle = computed(() => this.loadedQuizTitle() + this.i18n().titles.quizSuffix);
     readonly quizId = signal('');
 
     readonly allQuestions = signal<Question[]>([]);
@@ -59,12 +62,13 @@ export class QuizStateService {
 
     readonly progressText = computed(() => {
         const v = this.view();
-        if (v === 'start') return `Anzahl der Fragen wählen (1–${this.maxQuestions()})`;
-        if (v === 'select') return 'Fragen für das Quiz auswählen';
+        const i18n = this.i18n();
+        if (v === 'start') return i18n.quiz.progress.start(this.maxQuestions());
+        if (v === 'select') return i18n.quiz.progress.select;
         if (v === 'question') {
-            return `Frage ${this.currentIndex() + 1} / ${this.questions().length} | Punkte: ${this.score()}`;
+            return i18n.quiz.progress.question(this.currentIndex() + 1, this.questions().length, this.score());
         }
-        return `Endergebnis: ${this.score()} / ${this.questions().length}`;
+        return '';
     });
 
     init(): void {
@@ -75,12 +79,12 @@ export class QuizStateService {
             next: configs => {
                 const quiz = id ? configs.find(q => q.id === id) : configs[0];
                 if (!quiz) {
-                    this.loadError.set('Quiz nicht gefunden.');
+                    this.loadError.set(this.i18n().errors.quizNotFound);
                     this.loading.set(false);
                     return;
                 }
 
-                this.quizTitle.set(quiz.title + ' Quiz');
+                this.loadedQuizTitle.set(quiz.title);
                 this.quizDefaultCount.set(
                     typeof quiz.defaultCount === 'number' && quiz.defaultCount > 0 ? quiz.defaultCount : null
                 );
@@ -92,13 +96,13 @@ export class QuizStateService {
                         this.view.set('start');
                     },
                     error: (err: unknown) => {
-                        this.loadError.set(err instanceof Error ? err.message : 'Fragen konnten nicht geladen werden.');
+                        this.loadError.set(err instanceof Error ? err.message : this.i18n().errors.questionsError);
                         this.loading.set(false);
                     },
                 });
             },
             error: (err: unknown) => {
-                this.loadError.set(err instanceof Error ? err.message : 'Konfiguration konnte nicht geladen werden.');
+                this.loadError.set(err instanceof Error ? err.message : this.i18n().errors.configError);
                 this.loading.set(false);
             },
         });
@@ -242,7 +246,7 @@ export class QuizStateService {
         }
 
         this.questionStatusMessage.set({
-            text: exactMatch ? 'Richtig' : 'Falsch',
+            text: exactMatch ? this.i18n().quiz.answer.correct : this.i18n().quiz.answer.incorrect,
             kind: exactMatch ? 'correct' : 'incorrect',
         });
         this.revealed.set(true);
@@ -266,7 +270,8 @@ export class QuizStateService {
         const totalSec = Math.round(elapsed / 1000);
         const minutes = Math.floor(totalSec / 60);
         const seconds = totalSec % 60;
-        const timeStr = minutes > 0 ? `${minutes} Min. ${seconds} Sek.` : `${seconds} Sek.`;
+        const i18n = this.i18n();
+        const timeStr = minutes > 0 ? i18n.time.min(minutes, seconds) : i18n.time.sec(seconds);
         const percent = ((this.score() / this.questions().length) * 100).toFixed(1);
         this.finishedStatusMessage.set({
             text: `Quiz beendet. Ergebnis: ${percent}% (${this.score()} / ${this.questions().length} richtig) – Zeit: ${timeStr}`,
