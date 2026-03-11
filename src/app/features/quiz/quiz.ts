@@ -18,11 +18,16 @@ import { QuizFinishedComponent } from './components/quiz-finished/quiz-finished'
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [QuizStateService],
     imports: [RouterLink, QuizStartComponent, QuizSelectComponent, QuizQuestionComponent, QuizFinishedComponent],
+    host: { '(document:keydown.escape)': 'onEscape()' },
 })
 export class QuizComponent implements OnInit {
     protected readonly state = inject(QuizStateService);
 
     ngOnInit(): void {
         this.state.init();
+    }
+
+    protected onEscape(): void {
+        this.state.navigateToStart();
     }
 }
