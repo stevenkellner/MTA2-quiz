@@ -69,11 +69,14 @@ export class QuizQuestionComponent {
             }
         }
 
-        if (event.key !== 'Enter' || event.shiftKey) return;
-        const target = event.target as HTMLElement | null;
-        if (target?.tagName === 'BUTTON' || target?.tagName === 'A') return;
-        event.preventDefault();
-        this.onAction();
+        if (event.key === 'Enter' || event.key === ' ') {
+            if (event.shiftKey) return;
+            const target = event.target as HTMLElement | null;
+            if (target?.tagName === 'BUTTON' || target?.tagName === 'A') return;
+            event.preventDefault();
+            this.onAction();
+            return;
+        }
     }
 }
 
