@@ -1,60 +1,33 @@
 <main class="app">
     <header class="topbar">
-        <h1>{{ quizTitle() }}</h1>
-        <p aria-live="polite">{{ progressText() }}</p>
+        <h1>{{ state.quizTitle() }}</h1>
+        <p aria-live="polite">{{ state.progressText() }}</p>
     </header>
 
-    @if (loading()) {
+    @if (state.loading()) {
         <section class="card">
             <p class="muted">Fragen werden geladen…</p>
         </section>
-    } @else if (loadError()) {
+    } @else if (state.loadError()) {
         <section class="card" role="alert">
-            <p class="muted">{{ loadError() }}</p>
+            <p class="muted">{{ state.loadError() }}</p>
             <a routerLink="/" class="back-link">← Zur Auswahl</a>
         </section>
     } @else {
-        @switch (view()) {
+        @switch (state.view()) {
             @case ('start') {
-                <app-quiz-start
-                    [maxQuestions]="maxQuestions()"
-                    [defaultCount]="defaultCount()"
-                    [quizId]="quizId()"
-                    (startQuiz)="onStart($event)"
-                    (openSelect)="openSelectCard()"
-                />
+                <app-quiz-start />
             }
             @case ('select') {
-                <app-quiz-select
-                    [allQuestions]="allQuestions()"
-                    [selectedIndices]="selectedIndices()"
-                    (back)="backToStart()"
-                    (startQuiz)="onStartWithSelected()"
-                    (toggleEntry)="toggleSelectEntry($event)"
-                    (selectAll)="selectAll()"
-                    (deselectAll)="deselectAll()"
-                />
+                <app-quiz-select />
             }
             @case ('question') {
-                @if (currentQuestion(); as q) {
-                    <app-quiz-question
-                        [question]="q"
-                        [selectedAnswers]="selectedAnswers()"
-                        [revealed]="revealed()"
-                        [isLastQuestion]="isLastQuestion()"
-                        [statusMessage]="questionStatusMessage()"
-                        (toggleAnswer)="toggleAnswer($event)"
-                        (confirm)="onConfirm()"
-                        (next)="onNext()"
-                    />
+                @if (state.currentQuestion()) {
+                    <app-quiz-question />
                 }
             }
             @case ('finished') {
-                <app-quiz-finished
-                    [wrongAnswers]="wrongAnswers()"
-                    [statusMessage]="finishedStatusMessage()"
-                    (restart)="onRestart()"
-                />
+                <app-quiz-finished />
             }
         }
     }

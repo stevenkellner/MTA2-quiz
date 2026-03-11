@@ -9,8 +9,8 @@
                 id="question-count-id"
                 type="number"
                 [min]="1"
-                [max]="maxQuestions()"
-                [value]="defaultCount()"
+                [max]="state.maxQuestions()"
+                [value]="state.defaultCount()"
                 required
                 class="count-input"
                 aria-describedby="start-status"
@@ -18,11 +18,11 @@
         </div>
     </div>
     <div class="or-divider" aria-hidden="true">oder</div>
-    <button type="button" class="secondary-btn" (click)="openSelect.emit()">
+    <button type="button" class="secondary-btn" (click)="state.navigateToSelect()">
         Fragen manuell auswählen →
     </button>
     <div class="or-divider" aria-hidden="true">oder</div>
-    <a [routerLink]="['/fragen', quizId()]" class="secondary-btn">Alle Fragen ansehen →</a>
+    <a [routerLink]="['/fragen', state.quizId()]" class="secondary-btn">Alle Fragen ansehen →</a>
 </section>
 
 <div class="actions">

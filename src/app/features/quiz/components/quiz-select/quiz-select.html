@@ -1,6 +1,6 @@
 <section class="card" aria-labelledby="select-heading">
     <h2 id="select-heading" class="question">Fragen auswählen</h2>
-    <button type="button" class="back-btn" (click)="back.emit()">← Zurück</button>
+    <button type="button" class="back-btn" (click)="state.navigateToStart()">← Zurück</button>
     <div class="select-toolbar">
         <input
             #searchInput
@@ -11,8 +11,8 @@
             aria-label="Fragen durchsuchen"
         />
         <div class="select-btn-group">
-            <button type="button" (click)="selectAll.emit()">Alle</button>
-            <button type="button" (click)="deselectAll.emit()">Keine</button>
+            <button type="button" (click)="state.selectAllQuestions()">Alle</button>
+            <button type="button" (click)="state.deselectAllQuestions()">Keine</button>
         </div>
     </div>
     <p class="select-info" aria-live="polite">{{ infoText() }}</p>
@@ -22,9 +22,9 @@
                 class="select-entry"
                 [class.selected]="isIndexSelected(entry.idx)"
                 role="listitem"
-                (click)="toggleEntry.emit(entry.idx)"
-                (keydown.space)="$event.preventDefault(); toggleEntry.emit(entry.idx)"
-                (keydown.enter)="$event.stopPropagation(); toggleEntry.emit(entry.idx)"
+                (click)="state.toggleSelectEntry(entry.idx)"
+                (keydown.space)="$event.preventDefault(); state.toggleSelectEntry(entry.idx)"
+                (keydown.enter)="$event.stopPropagation(); state.toggleSelectEntry(entry.idx)"
                 tabindex="0"
                 [attr.aria-pressed]="isIndexSelected(entry.idx)"
                 [attr.aria-label]="'Frage ' + (entry.idx + 1) + ': ' + (entry.q.text || 'Kein Fragetext')"
@@ -46,7 +46,7 @@
         [class.incorrect]="statusText()"
         aria-live="polite"
     >{{ statusText() }}</p>
-    <button type="button" [disabled]="selectedIndices().size === 0" (click)="attemptStart()">
+    <button type="button" [disabled]="state.selectedIndices().size === 0" (click)="attemptStart()">
         Quiz mit Auswahl starten
     </button>
 </div>

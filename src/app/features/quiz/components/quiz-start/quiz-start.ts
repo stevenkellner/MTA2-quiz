@@ -1,13 +1,14 @@
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     Component,
     ElementRef,
-    input,
-    output,
+    inject,
     signal,
     viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { QuizStateService } from '../../quiz-state.service';
 
 @Component({
     selector: 'app-quiz-start',
@@ -15,23 +16,22 @@ import { RouterLink } from '@angular/router';
     styleUrl: './quiz-start.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [RouterLink],
+    host: { '(document:keydown)': 'onKeydown($event)' },
 })
-export class QuizStartComponent {
-    readonly maxQuestions = input.required<number>();
-    readonly defaultCount = input.required<number>();
-    readonly quizId = input.required<string>();
-
-    readonly startQuiz = output<number>();
-    readonly openSelect = output<void>();
-
+export class QuizStartComponent implements AfterViewInit {
+    protected readonly state = inject(QuizStateService);
     protected readonly statusText = signal('');
 
     private readonly countInputRef = viewChild<ElementRef<HTMLInputElement>>('countInput');
 
+    ngAfterViewInit(): void {
+        setTimeout(() => this.countInputRef()?.nativeElement.focus(), 0);
+    }
+
     attemptStart(): void {
         const inputEl = this.countInputRef()?.nativeElement;
         if (!inputEl) return;
-        const max = this.maxQuestions();
+        const max = this.state.maxQuestions();
         const requested = Number.parseInt(inputEl.value, 10);
         if (!Number.isInteger(requested) || requested < 1 || requested > max) {
             this.statusText.set(`Bitte gib eine ganze Zahl zwischen 1 und ${max} ein.`);
@@ -39,10 +39,14 @@ export class QuizStartComponent {
             return;
         }
         this.statusText.set('');
-        this.startQuiz.emit(requested);
+        this.state.startWithCount(requested);
     }
 
-    focus(): void {
-        setTimeout(() => this.countInputRef()?.nativeElement.focus(), 0);
+    protected onKeydown(event: KeyboardEvent): void {
+        if (event.key !== 'Enter' || event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        const target = event.target as HTMLElement | null;
+        if (target?.tagName === 'BUTTON' || target?.tagName === 'A') return;
+        event.preventDefault();
+        this.attemptStart();
     }
 }

@@ -1,8 +1,8 @@
-@if (wrongAnswers().length > 0) {
+@if (state.wrongAnswers().length > 0) {
     <section class="card review-card" aria-labelledby="review-heading">
         <h2 id="review-heading" class="question">Falsche Antworten</h2>
         <div class="review-list">
-            @for (wa of wrongAnswers(); track wa.question.text; let i = $index) {
+            @for (wa of state.wrongAnswers(); track wa.question.text; let i = $index) {
                 <div class="review-entry">
                     <app-question-view
                         mode="review"
@@ -21,6 +21,6 @@
         class="status"
         aria-live="polite"
         aria-atomic="true"
-    >{{ statusMessage().text }}</p>
-    <button type="button" (click)="restart.emit()">Neu starten</button>
+    >{{ state.finishedStatusMessage().text }}</p>
+    <button type="button" (click)="state.restart()">Neu starten</button>
 </div>

@@ -1,10 +1,9 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    input,
-    output,
+    inject,
 } from '@angular/core';
-import { StatusMessage, WrongAnswer } from '../../../../models/quiz.model';
+import { QuizStateService } from '../../quiz-state.service';
 import { QuestionViewComponent } from '../../../../shared/components/question-view/question-view';
 
 @Component({
@@ -13,10 +12,16 @@ import { QuestionViewComponent } from '../../../../shared/components/question-vi
     styleUrl: './quiz-finished.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
     imports: [QuestionViewComponent],
+    host: { '(document:keydown)': 'onKeydown($event)' },
 })
 export class QuizFinishedComponent {
-    readonly wrongAnswers = input.required<WrongAnswer[]>();
-    readonly statusMessage = input.required<StatusMessage>();
+    protected readonly state = inject(QuizStateService);
 
-    readonly restart = output<void>();
+    protected onKeydown(event: KeyboardEvent): void {
+        if (event.key !== 'Enter' || event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        const target = event.target as HTMLElement | null;
+        if (target?.tagName === 'BUTTON' || target?.tagName === 'A') return;
+        event.preventDefault();
+        this.state.restart();
+    }
 }
