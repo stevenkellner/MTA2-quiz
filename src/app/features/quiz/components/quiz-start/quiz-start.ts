@@ -8,7 +8,7 @@ import {
     viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { QuizStateService } from '../../quiz-state.service';
+import { QuizStateService } from '../../../../services/quiz-state.service';
 
 @Component({
     selector: 'app-quiz-start',

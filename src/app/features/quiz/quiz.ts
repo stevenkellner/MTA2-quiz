@@ -5,7 +5,7 @@ import {
     OnInit,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { QuizStateService } from './quiz-state.service';
+import { QuizStateService } from '../../services/quiz-state.service';
 import { QuizStartComponent } from './components/quiz-start/quiz-start';
 import { QuizSelectComponent } from './components/quiz-select/quiz-select';
 import { QuizQuestionComponent } from './components/quiz-question/quiz-question';

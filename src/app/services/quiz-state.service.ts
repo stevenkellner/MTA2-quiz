@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Question, StatusMessage, WrongAnswer } from '../../models/quiz.model';
-import { QuizService } from '../../services/quiz.service';
+import { Question, StatusMessage, WrongAnswer } from '../models/quiz.model';
+import { QuizService } from './quiz.service';
 
 export type QuizView = 'start' | 'select' | 'question' | 'finished';
 

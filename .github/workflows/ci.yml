@@ -6,7 +6,27 @@ on:
     pull_request:
         branches: [main]
 
+env:
+    FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
+            - run: npm ci
+            - run: npx ng build --configuration production
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: dist
+                  path: dist/
+                  retention-days: 7
+
     lint:
         name: Lint
         runs-on: ubuntu-latest
@@ -17,7 +37,7 @@ jobs:
                   node-version: 22
                   cache: npm
             - run: npm ci
-            - run: npm run lint
+            - run: npx ng lint
 
     test:
         name: Unit Tests
@@ -29,23 +49,12 @@ jobs:
                   node-version: 22
                   cache: npm
             - run: npm ci
-            - run: npm test -- --run
-
-    build:
-        name: Build
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
-              with:
-                  node-version: 22
-                  cache: npm
-            - run: npm ci
-            - run: npm run build
+            - run: npx ng test --no-watch --coverage
             - uses: actions/upload-artifact@v4
+              if: always()
               with:
-                  name: dist
-                  path: dist/
+                  name: coverage
+                  path: coverage/
                   retention-days: 7
 
     e2e:
@@ -61,7 +70,7 @@ jobs:
             - name: Install Playwright browsers
               run: npx playwright install --with-deps chromium firefox webkit
             - name: Run E2E tests
-              run: npm run e2e
+              run: npx ng e2e
               env:
                   CI: true
             - uses: actions/upload-artifact@v4

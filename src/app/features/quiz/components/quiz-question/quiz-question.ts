@@ -4,7 +4,7 @@ import {
     computed,
     inject,
 } from '@angular/core';
-import { QuizStateService } from '../../quiz-state.service';
+import { QuizStateService } from '../../../../services/quiz-state.service';
 import { QuestionViewComponent } from '../../../../shared/components/question-view/question-view';
 
 @Component({
