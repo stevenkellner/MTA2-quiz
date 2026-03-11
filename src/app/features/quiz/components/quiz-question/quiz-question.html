@@ -1,4 +1,16 @@
-<section class="card">
+<section
+    class="card"
+    [class.card--correct]="state.questionStatusMessage().kind === 'correct'"
+    [class.card--incorrect]="state.questionStatusMessage().kind === 'incorrect'"
+    aria-live="polite"
+    aria-atomic="true"
+    [attr.aria-label]="state.questionStatusMessage().text || null"
+>
+    @if (state.questionStatusMessage().kind !== 'neutral') {
+        <span class="result-badge" aria-hidden="true">
+            {{ state.questionStatusMessage().kind === 'correct' ? '✓' : '✗' }}
+        </span>
+    }
     <app-question-view
         mode="interactive"
         [question]="state.currentQuestion()!"
@@ -9,21 +21,15 @@
 </section>
 
 <div class="actions">
-    <p
-        class="status"
-        [class.correct]="state.questionStatusMessage().kind === 'correct'"
-        [class.incorrect]="state.questionStatusMessage().kind === 'incorrect'"
-        aria-live="polite"
-        aria-atomic="true"
-    >{{ state.questionStatusMessage().text }}</p>
     @if (!state.revealed()) {
         <p class="hotkey-hint" aria-hidden="true">
             <kbd>1</kbd>–<kbd>N</kbd> Antwort wählen &nbsp;·&nbsp;
             <kbd>⇧</kbd>+<kbd>1</kbd>–<kbd>N</kbd> Alle außer N &nbsp;·&nbsp;
             <kbd>A</kbd> Alle wählen &nbsp;·&nbsp;
             <kbd>N</kbd> Keine wählen &nbsp;·&nbsp;
-            <kbd>Enter</kbd> / <kbd>Space</kbd> Bestätigen
+            <kbd>Enter</kbd> / <kbd>Space</kbd> Bestätigen &nbsp;·&nbsp;
+            <kbd>Esc</kbd> Zum Start
         </p>
     }
-    <button type="button" (click)="onAction()">{{ actionButtonText() }}</button>
+    <button type="button" class="action-btn" (click)="onAction()">{{ actionButtonText() }}</button>
 </div>

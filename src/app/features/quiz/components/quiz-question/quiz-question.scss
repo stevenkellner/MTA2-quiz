@@ -1,5 +1,50 @@
 // Answers layout and answer-item styles are in global styles.scss
 
+.action-btn {
+    margin-left: auto;
+}
+
+:host {
+    .card--correct {
+        border-color: #73b894;
+        box-shadow: 0 0 0 2px #73b894, 0 8px 20px rgba(0, 0, 0, 0.06);
+        background: #f3fbf6;
+        transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+    }
+
+    .card--incorrect {
+        border-color: #df9892;
+        box-shadow: 0 0 0 2px #df9892, 0 8px 20px rgba(0, 0, 0, 0.06);
+        background: #fdf4f3;
+        transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
+    }
+}
+
+.result-badge {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+
+    .card--correct & {
+        background: #73b894;
+        color: #fff;
+    }
+
+    .card--incorrect & {
+        background: #df9892;
+        color: #fff;
+    }
+}
+
 .hotkey-hint {
     flex: 1;
     margin: 0;
