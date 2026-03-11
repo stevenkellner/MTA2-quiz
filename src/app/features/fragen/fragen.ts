@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { QuizConfig, Question } from '../../models/quiz.model';
@@ -17,11 +17,29 @@ export class FragenComponent implements OnInit {
     private readonly route = inject(ActivatedRoute);
     private readonly quizService = inject(QuizService);
     private readonly location = inject(Location);
-    protected readonly i18n = inject(I18nService).i18n;
+    private readonly i18nService = inject(I18nService);
+    protected readonly i18n = this.i18nService.i18n;
 
     protected readonly loading = signal(true);
-    protected readonly loadError = signal<string | null>(null);
+    private readonly localeErrorActive = signal(false);
+    private readonly loadErrorText = signal<string | null>(null);
+    protected readonly loadError = computed<string | null>(() =>
+        this.localeErrorActive() ? this.i18n().errors.quizNoLocale : this.loadErrorText()
+    );
     private readonly loadedQuiz = signal<QuizConfig | null>(null);
+
+    private readonly _localeWatcher = effect(() => {
+        const quiz = this.loadedQuiz();
+        const locale = this.i18nService.locale();
+        if (!quiz) return;
+        const file = this.quizService.resolveFile(quiz.files, locale);
+        if (!file) {
+            this.localeErrorActive.set(true);
+        } else if (this.localeErrorActive()) {
+            this.localeErrorActive.set(false);
+            this.reloadQuestions(quiz, file);
+        }
+    });
     protected readonly pageTitle = computed(() => {
         const quiz = this.loadedQuiz();
         return quiz ? quiz.title + this.i18n().titles.fragenSuffix : '';
@@ -54,26 +72,48 @@ export class FragenComponent implements OnInit {
             next: configs => {
                 const quiz = id ? configs.find(q => q.id === id) : configs[0];
                 if (!quiz) {
-                    this.loadError.set(this.i18n().errors.quizNotFound);
+                    this.loadErrorText.set(this.i18n().errors.quizNotFound);
                     this.loading.set(false);
                     return;
                 }
 
-                this.loadedQuiz.set(quiz);
+                const file = this.quizService.resolveFile(quiz.files, this.i18nService.locale());
+                if (!file) {
+                    this.loadedQuiz.set(quiz);
+                    this.localeErrorActive.set(true);
+                    this.loading.set(false);
+                    return;
+                }
 
-                this.quizService.loadQuestions(quiz.file).subscribe({
+                this.quizService.loadQuestions(file).subscribe({
                     next: questions => {
+                        this.loadedQuiz.set(quiz);
                         this.allQuestions.set(questions);
                         this.loading.set(false);
                     },
                     error: (err: unknown) => {
-                        this.loadError.set(err instanceof Error ? err.message : this.i18n().errors.questionsError);
+                        this.loadErrorText.set(err instanceof Error ? err.message : this.i18n().errors.questionsError);
                         this.loading.set(false);
                     },
                 });
             },
             error: (err: unknown) => {
-                this.loadError.set(err instanceof Error ? err.message : this.i18n().errors.configError);
+                this.loadErrorText.set(err instanceof Error ? err.message : this.i18n().errors.configError);
+                this.loading.set(false);
+            },
+        });
+    }
+
+    private reloadQuestions(quiz: QuizConfig, file: string): void {
+        this.loading.set(true);
+        this.allQuestions.set([]);
+        this.quizService.loadQuestions(file).subscribe({
+            next: questions => {
+                this.allQuestions.set(questions);
+                this.loading.set(false);
+            },
+            error: (err: unknown) => {
+                this.loadErrorText.set(err instanceof Error ? err.message : this.i18n().errors.questionsError);
                 this.loading.set(false);
             },
         });

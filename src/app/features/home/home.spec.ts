@@ -6,8 +6,8 @@ import type { QuizConfig } from '../../models/quiz.model';
 import { QuizService } from '../../services/quiz.service';
 
 const mockConfigs: QuizConfig[] = [
-    { id: 'mta', title: 'MTA Basics', file: 'mta.json', active: true },
-    { id: 'azure', title: 'Azure 900', file: 'az900.json', active: true },
+    { id: 'mta', title: 'MTA Basics', files: { de: 'mta.json', en: 'mta.json' }, active: true },
+    { id: 'azure', title: 'Azure 900', files: { de: 'az900.json', en: 'az900.json' }, active: true },
 ];
 
 describe('HomeComponent', () => {
@@ -16,7 +16,13 @@ describe('HomeComponent', () => {
             imports: [HomeComponent],
             providers: [
                 provideRouter([]),
-                { provide: QuizService, useValue: { loadConfig } },
+                {
+                    provide: QuizService,
+                    useValue: {
+                        loadConfig,
+                        resolveFile: (files: Record<string, string>, locale: string) => files[locale] ?? null,
+                    },
+                },
             ],
         });
     }

@@ -32,7 +32,7 @@ const mockQuestions: Question[] = [
     },
 ];
 
-const mockConfig: QuizConfig[] = [{ id: 'q1', title: 'Test Quiz', file: 'test.json', active: true }];
+const mockConfig: QuizConfig[] = [{ id: 'q1', title: 'Test Quiz', files: { de: 'test.json', en: 'test.json' }, active: true }];
 
 function setup(overrides: {
     quizId?: string;
@@ -57,6 +57,7 @@ function setup(overrides: {
                     loadConfig: () => (overrides.configError ? throwError(() => new Error('Config error')) : of(config)),
                     loadQuestions: () => (overrides.questionsError ? throwError(() => new Error('Questions error')) : of(questions)),
                     shuffle: <T>(arr: T[]) => [...arr],
+                    resolveFile: (files: Record<string, string>, locale: string) => files[locale] ?? null,
                 },
             },
         ],

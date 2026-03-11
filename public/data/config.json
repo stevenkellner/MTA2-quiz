@@ -2,7 +2,9 @@
     {
         "id": "mta2",
         "title": "MTA 2",
-        "file": "MTA2.json",
+        "files": {
+            "de": "MTA2_de.json"
+        },
         "defaultCount": 15,
         "active": true
     }

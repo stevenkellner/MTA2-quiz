@@ -25,7 +25,7 @@ const mockQuestions: Question[] = [
     },
 ];
 
-const mockConfig: QuizConfig[] = [{ id: 'test', title: 'Test Quiz', file: 'test.json', active: true }];
+const mockConfig: QuizConfig[] = [{ id: 'test', title: 'Test Quiz', files: { de: 'test.json', en: 'test.json' }, active: true }];
 
 describe('FragenComponent', () => {
     function setupTestBed(options: {
@@ -60,6 +60,7 @@ describe('FragenComponent', () => {
                         loadQuestions: () => questionsError
                             ? throwError(() => new Error('Questions failed'))
                             : of(questions),
+                        resolveFile: (files: Record<string, string>, locale: string) => files[locale] ?? null,
                     },
                 },
             ],

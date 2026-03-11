@@ -21,6 +21,10 @@ export interface Translations {
         // e.g. "Quiz nicht gefunden." / "Quiz not found."
         quizNotFound: string;
 
+        // Shown when the quiz exists but has no file for the active locale.
+        // e.g. "Dieses Quiz ist in dieser Sprache nicht verfügbar." / "This quiz is not available in the current language."
+        quizNoLocale: string;
+
         // Shown when the config.json HTTP request fails.
         // e.g. "Konfiguration konnte nicht geladen werden." / "Configuration could not be loaded."
         configError: string;

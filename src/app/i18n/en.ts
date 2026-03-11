@@ -8,6 +8,7 @@ export const en: Translations = {
     },
     errors: {
         quizNotFound: 'Quiz not found.',
+        quizNoLocale: 'This quiz is not available in the current language.',
         configError: 'Configuration could not be loaded.',
         questionsError: 'Questions could not be loaded.',
         loading: 'Loading questions…',

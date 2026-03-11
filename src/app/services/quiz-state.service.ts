@@ -1,6 +1,6 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal, untracked } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Question, StatusMessage, WrongAnswer } from '../models/quiz.model';
+import { Question, QuizConfig, StatusMessage, WrongAnswer } from '../models/quiz.model';
 import { QuizService } from './quiz.service';
 import { I18nService } from './i18n.service';
 
@@ -10,11 +10,36 @@ export type QuizView = 'start' | 'select' | 'question' | 'finished';
 export class QuizStateService {
     private readonly route = inject(ActivatedRoute);
     private readonly quizService = inject(QuizService);
-    private readonly i18n = inject(I18nService).i18n;
+    private readonly i18nService = inject(I18nService);
+    private readonly i18n = this.i18nService.i18n;
 
     readonly loading = signal(true);
-    readonly loadError = signal<string | null>(null);
+    private readonly localeErrorActive = signal(false);
+    private readonly loadErrorText = signal<string | null>(null);
+    readonly loadError = computed<string | null>(() =>
+        this.localeErrorActive() ? this.i18n().errors.quizNoLocale : this.loadErrorText()
+    );
+    private readonly loadedQuizConfig = signal<QuizConfig | null>(null);
+    private readonly loadedLocale = signal<string | null>(null);
     private readonly loadedQuizTitle = signal('');
+
+    private readonly _localeWatcher = effect(() => {
+        const quiz = this.loadedQuizConfig();
+        const locale = this.i18nService.locale();
+        if (!quiz) return;
+        // Skip the initial trigger caused by loadedQuizConfig being set during init();
+        // only act when the locale actually changes after the initial load.
+        if (locale === untracked(() => this.loadedLocale())) return;
+        const file = this.quizService.resolveFile(quiz.files, locale);
+        if (!file) {
+            this.localeErrorActive.set(true);
+            this.view.set('start');
+        } else {
+            this.localeErrorActive.set(false);
+            this.view.set('start');
+            this.reloadQuestions(quiz, file);
+        }
+    });
     readonly quizTitle = computed(() => this.loadedQuizTitle() + this.i18n().titles.quizSuffix);
     readonly quizId = signal('');
 
@@ -79,7 +104,17 @@ export class QuizStateService {
             next: configs => {
                 const quiz = id ? configs.find(q => q.id === id) : configs[0];
                 if (!quiz) {
-                    this.loadError.set(this.i18n().errors.quizNotFound);
+                    this.loadErrorText.set(this.i18n().errors.quizNotFound);
+                    this.loading.set(false);
+                    return;
+                }
+
+                const file = this.quizService.resolveFile(quiz.files, this.i18nService.locale());
+                if (!file) {
+                    this.loadedQuizTitle.set(quiz.title);
+                    this.loadedLocale.set(this.i18nService.locale());
+                    this.loadedQuizConfig.set(quiz);
+                    this.localeErrorActive.set(true);
                     this.loading.set(false);
                     return;
                 }
@@ -89,20 +124,22 @@ export class QuizStateService {
                     typeof quiz.defaultCount === 'number' && quiz.defaultCount > 0 ? quiz.defaultCount : null
                 );
 
-                this.quizService.loadQuestions(quiz.file).subscribe({
+                this.quizService.loadQuestions(file).subscribe({
                     next: questions => {
+                        this.loadedLocale.set(this.i18nService.locale());
+                        this.loadedQuizConfig.set(quiz);
                         this.allQuestions.set(this.quizService.shuffle(questions));
                         this.loading.set(false);
                         this.view.set('start');
                     },
                     error: (err: unknown) => {
-                        this.loadError.set(err instanceof Error ? err.message : this.i18n().errors.questionsError);
+                        this.loadErrorText.set(err instanceof Error ? err.message : this.i18n().errors.questionsError);
                         this.loading.set(false);
                     },
                 });
             },
             error: (err: unknown) => {
-                this.loadError.set(err instanceof Error ? err.message : this.i18n().errors.configError);
+                this.loadErrorText.set(err instanceof Error ? err.message : this.i18n().errors.configError);
                 this.loading.set(false);
             },
         });
@@ -279,5 +316,20 @@ export class QuizStateService {
         });
         this.finishedStats.set({ score: this.score(), total: this.questions().length, percent, timeStr });
         this.view.set('finished');
+    }
+
+    private reloadQuestions(quiz: QuizConfig, file: string): void {
+        this.loading.set(true);
+        this.quizService.loadQuestions(file).subscribe({
+            next: questions => {
+                this.loadedLocale.set(this.i18nService.locale());
+                this.allQuestions.set(this.quizService.shuffle(questions));
+                this.loading.set(false);
+            },
+            error: (err: unknown) => {
+                this.loadErrorText.set(err instanceof Error ? err.message : this.i18n().errors.questionsError);
+                this.loading.set(false);
+            },
+        });
     }
 }

@@ -28,9 +28,9 @@ describe('QuizService', () => {
 
         it('returns active quizzes and quizzes without active property', () => {
             const configs: QuizConfig[] = [
-                { id: '1', title: 'A', file: 'a.json', active: true },
-                { id: '2', title: 'B', file: 'b.json', active: false },
-                { id: '3', title: 'C', file: 'c.json' },
+                { id: '1', title: 'A', files: { de: 'a.json' }, active: true },
+                { id: '2', title: 'B', files: { de: 'b.json' }, active: false },
+                { id: '3', title: 'C', files: { de: 'c.json' } },
             ];
             let result: QuizConfig[] = [];
             service.loadConfig().subscribe(c => (result = c));

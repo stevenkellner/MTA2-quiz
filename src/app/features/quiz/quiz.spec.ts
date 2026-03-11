@@ -25,7 +25,7 @@ const mockQuestions: Question[] = [
     },
 ];
 
-const mockConfig: QuizConfig[] = [{ id: 'q1', title: 'Test Quiz', file: 'test.json', active: true }];
+const mockConfig: QuizConfig[] = [{ id: 'q1', title: 'Test Quiz', files: { de: 'test.json', en: 'test.json' }, active: true }];
 
 describe('QuizComponent', () => {
     let loadConfigImpl: () => Observable<QuizConfig[]>;
@@ -50,6 +50,7 @@ describe('QuizComponent', () => {
                         loadConfig: () => loadConfigImpl(),
                         loadQuestions: () => loadQuestionsImpl(),
                         shuffle: <T>(arr: T[]) => [...arr],
+                        resolveFile: (files: Record<string, string>, locale: string) => files[locale] ?? null,
                     },
                 },
             ],

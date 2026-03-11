@@ -1,7 +1,7 @@
 export interface QuizConfig {
     id: string;
     title: string;
-    file: string;
+    files: Record<string, string>;
     defaultCount?: number;
     active?: boolean;
 }
